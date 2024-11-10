@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0shg5k0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.28.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:collaboration id="Collaboration_17hgkjx">
+    <bpmn:participant id="Participant_0nvw8n1" name="InputService" processRef="Process_InputService" />
+    <bpmn:participant id="Participant_1qlc4ir" name="AfterInputService" processRef="Process_AfterInputService" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_InputService" isExecutable="true" camunda:historyTimeToLive="2">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0naa9sp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Activity_0uf6efw" name="InputService" camunda:class="io.munkush.com.bpmn.InputServiceTask">
+      <bpmn:incoming>Flow_0naa9sp</bpmn:incoming>
+      <bpmn:outgoing>Flow_19glant</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0kvwr3x" default="Flow_0m6v7qw">
+      <bpmn:extensionElements />
+      <bpmn:incoming>Flow_19glant</bpmn:incoming>
+      <bpmn:outgoing>Flow_186hmlh</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13yjnt8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0m6v7qw</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_1ky9n9z">
+      <bpmn:incoming>Flow_13yjnt8</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0c1d1bo" camunda:class="io.munkush.com.bpmn.DownTask" />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1c0f1u1">
+      <bpmn:incoming>Flow_186hmlh</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1aoaq81" camunda:class="io.munkush.com.bpmn.UpTask" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0naa9sp" sourceRef="StartEvent_1" targetRef="Activity_0uf6efw" />
+    <bpmn:sequenceFlow id="Flow_19glant" sourceRef="Activity_0uf6efw" targetRef="Gateway_0kvwr3x" />
+    <bpmn:sequenceFlow id="Flow_186hmlh" sourceRef="Gateway_0kvwr3x" targetRef="Event_1c0f1u1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.hasVariable("number") &amp;&amp; execution.getVariable("number") &gt; 5}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_13yjnt8" sourceRef="Gateway_0kvwr3x" targetRef="Event_1ky9n9z">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${execution.hasVariable("number") &amp;&amp; execution.getVariable("number") &lt; 5}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0m6v7qw" sourceRef="Gateway_0kvwr3x" targetRef="Activity_0jt22ag" />
+    <bpmn:callActivity id="Activity_0jt22ag" name="Вызов After" calledElement="Process_AfterInputService">
+      <bpmn:extensionElements>
+        <camunda:in businessKey="#{execution.processBusinessKey}" />
+        <camunda:inputOutput>
+          <camunda:inputParameter name="number">${execution.getVariable("number")}</camunda:inputParameter>
+        </camunda:inputOutput>
+        <camunda:in local="true" variables="all" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0m6v7qw</bpmn:incoming>
+    </bpmn:callActivity>
+    <bpmn:boundaryEvent id="Event_13tz3rp" attachedToRef="Activity_0uf6efw">
+      <bpmn:outgoing>Flow_12lvotb</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1hfc7nt" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_12lvotb" sourceRef="Event_13tz3rp" targetRef="Event_1wh0wy9" />
+    <bpmn:endEvent id="Event_1wh0wy9">
+      <bpmn:incoming>Flow_12lvotb</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1ifhgsh" camunda:class="io.munkush.com.bpmn.InputErrorTask" />
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:process id="Process_AfterInputService" isExecutable="true" camunda:historyTimeToLive="2">
+    <bpmn:startEvent id="Event_067focw">
+      <bpmn:outgoing>Flow_1912w7g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1gokk6j">
+      <bpmn:incoming>Flow_1912w7g</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_02j0vo3" camunda:class="io.munkush.com.bpmn.AfterServiceTask" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1912w7g" sourceRef="Event_067focw" targetRef="Event_1gokk6j" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_17hgkjx">
+      <bpmndi:BPMNShape id="Participant_0nvw8n1_di" bpmnElement="Participant_0nvw8n1" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="740" height="390" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="222" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0uf6efw_di" bpmnElement="Activity_0uf6efw">
+        <dc:Bounds x="310" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0kvwr3x_di" bpmnElement="Gateway_0kvwr3x" isMarkerVisible="true">
+        <dc:Bounds x="465" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_0fmr5gz" bpmnElement="Event_1ky9n9z">
+        <dc:Bounds x="602" y="352" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1c0f1u1_di" bpmnElement="Event_1c0f1u1">
+        <dc:Bounds x="602" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jt22ag_di" bpmnElement="Activity_0jt22ag">
+        <dc:Bounds x="570" y="220" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wh0wy9_di" bpmnElement="Event_1wh0wy9">
+        <dc:Bounds x="342" y="382" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13tz3rp_di" bpmnElement="Event_13tz3rp">
+        <dc:Bounds x="342" y="282" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0naa9sp_di" bpmnElement="Flow_0naa9sp">
+        <di:waypoint x="258" y="260" />
+        <di:waypoint x="310" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19glant_di" bpmnElement="Flow_19glant">
+        <di:waypoint x="410" y="260" />
+        <di:waypoint x="465" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_186hmlh_di" bpmnElement="Flow_186hmlh">
+        <di:waypoint x="490" y="235" />
+        <di:waypoint x="490" y="160" />
+        <di:waypoint x="602" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13yjnt8_di" bpmnElement="Flow_13yjnt8">
+        <di:waypoint x="490" y="285" />
+        <di:waypoint x="490" y="370" />
+        <di:waypoint x="602" y="370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m6v7qw_di" bpmnElement="Flow_0m6v7qw">
+        <di:waypoint x="515" y="260" />
+        <di:waypoint x="570" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12lvotb_di" bpmnElement="Flow_12lvotb">
+        <di:waypoint x="360" y="318" />
+        <di:waypoint x="360" y="382" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_1qlc4ir_di" bpmnElement="Participant_1qlc4ir" isHorizontal="true">
+        <dc:Bounds x="160" y="510" width="600" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_067focw_di" bpmnElement="Event_067focw">
+        <dc:Bounds x="222" y="622" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gokk6j_di" bpmnElement="Event_1gokk6j">
+        <dc:Bounds x="312" y="622" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1912w7g_di" bpmnElement="Flow_1912w7g">
+        <di:waypoint x="258" y="640" />
+        <di:waypoint x="312" y="640" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

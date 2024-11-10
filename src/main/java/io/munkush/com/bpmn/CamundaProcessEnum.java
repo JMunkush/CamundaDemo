@@ -1,7 +1,8 @@
 package io.munkush.com.bpmn;
 
 public enum CamundaProcessEnum {
-    SAY_HELLO("Process_SayHello");
+    SAY_HELLO("Process_SayHello"),
+    INPUT("Process_InputService");
 
     final String processName;
 

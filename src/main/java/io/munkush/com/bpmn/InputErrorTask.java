@@ -5,9 +5,9 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SayHelloTask implements JavaDelegate {
+public class InputErrorTask implements JavaDelegate {
     @Override
-    public void execute(DelegateExecution delegateExecution) {
-        System.out.println("Hello: " + delegateExecution.getVariables().get("name"));
+    public void execute(DelegateExecution delegateExecution) throws Exception {
+        System.out.println("ErrorTask is working...");
     }
 }

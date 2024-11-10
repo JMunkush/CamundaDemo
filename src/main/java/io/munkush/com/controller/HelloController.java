@@ -9,18 +9,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.munkush.com.bpmn.CamundaProcessEnum.SAY_HELLO;
+import static io.munkush.com.bpmn.CamundaProcessEnum.INPUT;
 
 @RestController
 @RequiredArgsConstructor
 public class HelloController {
 
     private final RuntimeService runtimeService;
-    @GetMapping("/say-hello/{name}")
-    public String sayHello(@PathVariable String name){
+    @GetMapping("/input/{number}")
+    public String sayHello(@PathVariable String number){
         Map<String, Object> variables = new HashMap<>();
-        variables.put("name", name);
-        runtimeService.startProcessInstanceByKey(SAY_HELLO.getProcessName(), variables);
+        variables.put("number", number);
+
+        runtimeService.startProcessInstanceByKey(INPUT.getProcessName(), variables);
         return "called";
     }
 }
